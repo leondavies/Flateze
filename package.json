@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
+    "vercel-build": "prisma generate --no-engine && next build",
+    "postinstall": "prisma generate --no-engine",
     "start": "next start",
     "lint": "next lint"
   },
