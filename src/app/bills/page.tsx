@@ -410,35 +410,35 @@ export default function Bills() {
           </div>
 
           {/* Bills Summary Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-white/20 shadow-lg">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+            <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl p-3 md:p-4 border border-white/20 dark:border-slate-700/30 shadow-lg">
               <div className="text-center">
-                <div className="text-2xl font-bold text-slate-800">{filteredBills.length}</div>
-                <div className="text-sm text-slate-600">Total Bills</div>
+                <div className="text-lg md:text-2xl font-bold text-slate-800 dark:text-slate-100">{filteredBills.length}</div>
+                <div className="text-xs md:text-sm text-slate-600 dark:text-slate-400">Total Bills</div>
               </div>
             </div>
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-white/20 shadow-lg">
+            <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl p-3 md:p-4 border border-white/20 dark:border-slate-700/30 shadow-lg">
               <div className="text-center">
-                <div className="text-2xl font-bold text-red-600">
+                <div className="text-lg md:text-2xl font-bold text-red-600 dark:text-red-400">
                   {filteredBills.filter(b => b.status === 'PENDING' || b.status === 'PARTIALLY_PAID').length}
                 </div>
-                <div className="text-sm text-slate-600">Unpaid Bills</div>
+                <div className="text-xs md:text-sm text-slate-600 dark:text-slate-400">Unpaid Bills</div>
               </div>
             </div>
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-white/20 shadow-lg">
+            <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl p-3 md:p-4 border border-white/20 dark:border-slate-700/30 shadow-lg">
               <div className="text-center">
-                <div className="text-2xl font-bold text-amber-600">
+                <div className="text-lg md:text-2xl font-bold text-amber-600 dark:text-amber-400">
                   {filteredBills.filter(b => b.status === 'OVERDUE').length}
                 </div>
-                <div className="text-sm text-slate-600">Overdue Bills</div>
+                <div className="text-xs md:text-sm text-slate-600 dark:text-slate-400">Overdue</div>
               </div>
             </div>
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-white/20 shadow-lg">
+            <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl p-3 md:p-4 border border-white/20 dark:border-slate-700/30 shadow-lg">
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">
+                <div className="text-sm md:text-xl font-bold text-green-600 dark:text-green-400">
                   ${filteredBills.reduce((sum, bill) => sum + bill.amount, 0).toFixed(2)}
                 </div>
-                <div className="text-sm text-slate-600">Total Amount</div>
+                <div className="text-xs md:text-sm text-slate-600 dark:text-slate-400">Total Amount</div>
               </div>
             </div>
           </div>
@@ -457,82 +457,74 @@ export default function Bills() {
                 return (
                   <div key={bill.id} className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl border border-white/20 dark:border-slate-700/30 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
                     <div className="p-4 sm:p-6">
-                      {/* Mobile-first responsive layout */}
-                      <div className="space-y-4">
-                        {/* Header section with company and status */}
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-center space-x-3 flex-1 min-w-0">
-                            <div className="text-2xl sm:text-3xl flex-shrink-0">{getBillTypeIcon(bill.billType)}</div>
-                            <div className="min-w-0 flex-1">
-                              <h3 className="text-lg sm:text-xl font-bold text-slate-800 dark:text-slate-100 truncate">{bill.companyName}</h3>
-                              <div className="flex flex-wrap items-center gap-2 mt-1">
-                                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-bold border ${getStatusColor(bill.status)}`}>
-                                  {getStatusIcon(bill.status)} {bill.status.toLowerCase().replace('_', ' ')}
-                                </span>
-                                <span className="text-xs sm:text-sm text-slate-500 dark:text-slate-500">
-                                  {bill.billType.toLowerCase().replace('_', ' ')}
-                                </span>
-                              </div>
-                            </div>
+                      {/* Mobile-optimized vertical layout to match dashboard */}
+                      <div className="space-y-3">
+                        {/* Company header */}
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 ${
+                            bill.status === 'PAID' ? 'bg-gradient-to-r from-green-400 to-emerald-500' : 
+                            bill.status === 'PARTIALLY_PAID' ? 'bg-gradient-to-r from-yellow-400 to-amber-500' : 
+                            'bg-gradient-to-r from-red-400 to-pink-500'
+                          }`}>
+                            {bill.companyName.charAt(0)}
                           </div>
-                          
-                          {/* Amount - always visible on mobile */}
-                          <div className="text-right flex-shrink-0 ml-4">
-                            <div className="text-xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">${bill.amount.toFixed(2)}</div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-bold text-slate-800 dark:text-slate-100 truncate">{bill.companyName}</h4>
+                            <div className="flex items-center space-x-2 mt-0.5">
+                              <span className="text-sm">{getBillTypeIcon(bill.billType)}</span>
+                              <span className="text-xs text-slate-500 dark:text-slate-400">{bill.billType.toLowerCase().replace('_', ' ')}</span>
+                            </div>
                           </div>
                         </div>
 
-                        {/* Bill details section */}
-                        <div className="space-y-2">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                            {bill.referenceId && (
-                              <span className="flex items-center">
-                                <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
-                                </svg>
-                                <span className="truncate">{bill.referenceId}</span>
-                              </span>
-                            )}
-                            <span className="flex items-center">
-                              <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4h3a1 1 0 011 1v9a2 2 0 01-2 2H7a2 2 0 01-2-2V8a1 1 0 011-1h1z" />
-                              </svg>
-                              <span className="truncate">Bill: {new Date(bill.billDate).toLocaleDateString()}</span>
-                            </span>
+                        {/* Amount and status */}
+                        <div className="flex items-center justify-between">
+                          <div className="text-xl font-bold text-slate-800 dark:text-slate-100">
+                            ${bill.amount.toFixed(2)}
                           </div>
-                          
-                          {bill.dueDate && (
-                            <div className={`text-xs sm:text-sm flex items-center ${daysUntilDue !== null && daysUntilDue < 0 ? 'text-red-600 font-semibold' : daysUntilDue !== null && daysUntilDue <= 3 ? 'text-amber-600 font-semibold' : 'text-slate-600 dark:text-slate-400'}`}>
-                              <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                            bill.status === 'PAID' ? 'bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800/50' : 
+                            bill.status === 'PARTIALLY_PAID' ? 'bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-800/50' : 
+                            'bg-red-100 text-red-800 border border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800/50'
+                          }`}>
+                            {getStatusIcon(bill.status)} {bill.status.toLowerCase().replace('_', ' ')}
+                          </span>
+                        </div>
+
+                        {/* Bill details */}
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                          {bill.referenceId && (
+                            <div className="flex items-center">
+                              <svg className="w-3 h-3 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
                               </svg>
-                              <span className="flex-1">
-                                Due: {new Date(bill.dueDate).toLocaleDateString()}
-                                {daysUntilDue !== null && (
-                                  <span className="block sm:inline sm:ml-1">
-                                    ({daysUntilDue < 0 ? `${Math.abs(daysUntilDue)} days overdue` : 
-                                      daysUntilDue === 0 ? 'Due today' : 
-                                      `${daysUntilDue} days left`})
-                                  </span>
-                                )}
-                              </span>
+                              <span className="truncate">{bill.referenceId}</span>
                             </div>
                           )}
+                          <div className={`flex items-center ${daysUntilDue !== null && daysUntilDue < 0 ? 'text-red-600 font-medium' : daysUntilDue !== null && daysUntilDue <= 3 ? 'text-amber-600 font-medium' : 'text-slate-600 dark:text-slate-400'}`}>
+                            <svg className="w-3 h-3 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4h3a1 1 0 011 1v9a2 2 0 01-2 2H7a2 2 0 01-2-2V8a1 1 0 011-1h1z" />
+                            </svg>
+                            <span>
+                              {bill.dueDate ? (daysUntilDue !== null && daysUntilDue < 0 ? `${Math.abs(daysUntilDue)} days overdue` : 
+                                daysUntilDue !== null && daysUntilDue === 0 ? 'Due today' : 
+                                daysUntilDue !== null && daysUntilDue <= 3 ? `${daysUntilDue} days left` :
+                                `Due ${new Date(bill.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`) : 'No due date'}
+                            </span>
+                          </div>
                         </div>
 
                         {/* Actions section - only show for unpaid bills */}
                         {bill.status !== 'PAID' && (
-                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pt-2 border-t border-slate-200 dark:border-slate-600">
-                            <div className="flex-1">
-                              {bill.status === 'PARTIALLY_PAID' && (
-                                <div className="text-xs text-slate-500 dark:text-slate-400">
-                                  Remaining: ${(bill.amount - mockPayments.filter(p => p.billId === bill.id).reduce((sum, p) => sum + p.amount, 0)).toFixed(2)}
-                                </div>
-                              )}
-                            </div>
+                          <div className="pt-3 border-t border-slate-200 dark:border-slate-600 space-y-2">
+                            {bill.status === 'PARTIALLY_PAID' && (
+                              <div className="text-center text-sm text-slate-600 dark:text-slate-400">
+                                Remaining: ${(bill.amount - mockPayments.filter(p => p.billId === bill.id).reduce((sum, p) => sum + p.amount, 0)).toFixed(2)}
+                              </div>
+                            )}
                             <button
                               onClick={() => handlePayment(bill)}
-                              className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-700 text-white rounded-lg hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 text-sm font-medium"
+                              className="w-full px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-700 text-white rounded-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 font-medium"
                             >
                               💳 Pay Bill
                             </button>
@@ -542,33 +534,33 @@ export default function Bills() {
 
                       {/* Payment History for this bill */}
                       {mockPayments.filter(p => p.billId === bill.id).length > 0 && (
-                        <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-600">
-                          <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Payment History</h4>
+                        <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-600">
+                          <h4 className="text-xs font-medium text-slate-700 dark:text-slate-300 mb-2">Payment History</h4>
                           <div className="space-y-2">
                             {mockPayments.filter(p => p.billId === bill.id).map(payment => (
-                              <div key={payment.id} className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3">
-                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                              <div key={payment.id} className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-2.5">
+                                <div className="flex items-center justify-between">
                                   <div className="flex items-center space-x-2 min-w-0 flex-1">
                                     <img
-                                      src={payment.user.image || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=24&h=24&fit=crop&crop=face`}
+                                      src={payment.user.image || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=20&h=20&fit=crop&crop=face`}
                                       alt={payment.user.name}
-                                      className="w-6 h-6 rounded-full flex-shrink-0"
+                                      className="w-5 h-5 rounded-full flex-shrink-0"
                                     />
                                     <div className="min-w-0 flex-1">
-                                      <div className="flex items-center space-x-2 text-sm">
-                                        <span className="font-medium text-slate-800 dark:text-slate-200 truncate">{payment.user.name}</span>
-                                        <span className="text-slate-500 dark:text-slate-400 hidden sm:inline">•</span>
-                                        <span className="text-slate-500 dark:text-slate-400 text-xs truncate">{payment.method.toLowerCase().replace('_', ' ')}</span>
+                                      <div className="text-xs font-medium text-slate-800 dark:text-slate-200 truncate">{payment.user.name}</div>
+                                      <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                                        <span>{payment.method.toLowerCase().replace('_', ' ')}</span>
+                                        <span>•</span>
+                                        <span>{new Date(payment.paidAt).toLocaleDateString()}</span>
                                       </div>
                                     </div>
                                   </div>
-                                  <div className="text-right sm:text-left sm:flex-shrink-0">
-                                    <div className="font-semibold text-green-600 dark:text-green-400 text-sm">${payment.amount.toFixed(2)}</div>
-                                    <div className="text-xs text-slate-500 dark:text-slate-400">{new Date(payment.paidAt).toLocaleDateString()}</div>
+                                  <div className="text-xs font-semibold text-green-600 dark:text-green-400 ml-2">
+                                    ${payment.amount.toFixed(2)}
                                   </div>
                                 </div>
                                 {payment.notes && (
-                                  <div className="mt-2 text-slate-600 dark:text-slate-400 text-xs">{payment.notes}</div>
+                                  <div className="mt-1.5 text-slate-600 dark:text-slate-400 text-xs pl-7">{payment.notes}</div>
                                 )}
                               </div>
                             ))}

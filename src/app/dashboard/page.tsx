@@ -392,49 +392,56 @@ export default function Dashboard() {
                 
             <div className="space-y-4">
                   {currentFlat?.bills.map((bill) => (
-                    <div key={bill.id} className="group bg-gradient-to-r from-white to-slate-50 border border-slate-200 rounded-2xl p-6 hover:shadow-lg hover:border-slate-300 transition-all duration-300">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-4 mb-3">
-                            <div className="flex-shrink-0">
-                              <div className={`w-4 h-4 rounded-full shadow-sm ${
-                                bill.status === 'PAID' ? 'bg-gradient-to-r from-green-400 to-emerald-500 shadow-green-200' : 
-                                bill.status === 'PARTIALLY_PAID' ? 'bg-gradient-to-r from-yellow-400 to-amber-500 shadow-yellow-200' : 
-                                'bg-gradient-to-r from-red-400 to-pink-500 shadow-red-200'
-                              }`}></div>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <h4 className="text-lg font-bold text-slate-800">{bill.companyName}</h4>
-                              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-                                {getBillTypeIcon(bill.billType)} {bill.billType.toLowerCase().replace('_', ' ')}
-                              </span>
-                            </div>
+                    <div key={bill.id} className="group bg-gradient-to-r from-white to-slate-50 dark:from-slate-800 dark:to-slate-700 border border-slate-200 dark:border-slate-600 rounded-2xl p-4 sm:p-6 hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-500 transition-all duration-300">
+                      {/* Mobile-optimized vertical layout */}
+                      <div className="space-y-3">
+                        {/* Company header */}
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 ${
+                            bill.status === 'PAID' ? 'bg-gradient-to-r from-green-400 to-emerald-500' : 
+                            bill.status === 'PARTIALLY_PAID' ? 'bg-gradient-to-r from-yellow-400 to-amber-500' : 
+                            'bg-gradient-to-r from-red-400 to-pink-500'
+                          }`}>
+                            {bill.companyName.charAt(0)}
                           </div>
-                          <div className="flex flex-wrap gap-4 text-sm text-slate-500">
-                            {bill.referenceId && (
-                              <span className="flex items-center">
-                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
-                                </svg>
-                                {bill.referenceId}
-                              </span>
-                            )}
-                            <span className="flex items-center">
-                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4h3a1 1 0 011 1v9a2 2 0 01-2 2H7a2 2 0 01-2-2V8a1 1 0 011-1h1z" />
-                              </svg>
-                              Due: {bill.dueDate ? new Date(bill.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'No due date'}
-                            </span>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-bold text-slate-800 dark:text-slate-100 truncate">{bill.companyName}</h4>
+                            <div className="flex items-center space-x-2 mt-0.5">
+                              <span className="text-sm">{getBillTypeIcon(bill.billType)}</span>
+                              <span className="text-xs text-slate-500 dark:text-slate-400">{bill.billType.toLowerCase().replace('_', ' ')}</span>
+                            </div>
                           </div>
                         </div>
-                        <div className="text-right ml-6">
-                          <div className="text-3xl font-bold text-slate-800 mb-1">${bill.amount.toFixed(2)}</div>
-                          <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${
-                            bill.status === 'PAID' ? 'bg-green-100 text-green-800 border border-green-200' : 
-                            bill.status === 'PARTIALLY_PAID' ? 'bg-yellow-100 text-yellow-800 border border-yellow-200' : 
-                            'bg-red-100 text-red-800 border border-red-200'
+
+                        {/* Amount and status */}
+                        <div className="flex items-center justify-between">
+                          <div className="text-xl font-bold text-slate-800 dark:text-slate-100">
+                            ${bill.amount.toFixed(2)}
+                          </div>
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                            bill.status === 'PAID' ? 'bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800/50' : 
+                            bill.status === 'PARTIALLY_PAID' ? 'bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-800/50' : 
+                            'bg-red-100 text-red-800 border border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800/50'
                           }`}>
                             {getStatusIcon(bill.status)} {bill.status.toLowerCase().replace('_', ' ')}
+                          </span>
+                        </div>
+
+                        {/* Bill details */}
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                          {bill.referenceId && (
+                            <div className="flex items-center">
+                              <svg className="w-3 h-3 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                              </svg>
+                              <span className="truncate">{bill.referenceId}</span>
+                            </div>
+                          )}
+                          <div className="flex items-center">
+                            <svg className="w-3 h-3 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4h3a1 1 0 011 1v9a2 2 0 01-2 2H7a2 2 0 01-2-2V8a1 1 0 011-1h1z" />
+                            </svg>
+                            <span>Due: {bill.dueDate ? new Date(bill.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'No due date'}</span>
                           </div>
                         </div>
                       </div>

@@ -1,11 +1,25 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNotifications } from '@/contexts/notifications-context'
 
-export function NotificationCenter() {
+interface NotificationCenterProps {
+  isOpen?: boolean
+  onToggle?: () => void
+}
+
+export function NotificationCenter({ isOpen = false, onToggle }: NotificationCenterProps) {
   const { notifications, unreadCount, markAsRead, markAllAsRead, clearAll, removeNotification } = useNotifications()
-  const [showDropdown, setShowDropdown] = useState(false)
+
+  const handleToggleDropdown = () => {
+    onToggle?.()
+  }
+
+  const handleClose = () => {
+    if (isOpen && onToggle) {
+      onToggle()
+    }
+  }
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -40,7 +54,7 @@ export function NotificationCenter() {
   return (
     <div className="relative">
       <button
-        onClick={() => setShowDropdown(!showDropdown)}
+        onClick={handleToggleDropdown}
         className="relative p-2 rounded-lg hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-200 text-slate-700 dark:text-slate-300"
         title="Notifications"
       >
@@ -55,16 +69,16 @@ export function NotificationCenter() {
         )}
       </button>
 
-      {showDropdown && (
+      {isOpen && (
         <>
           {/* Backdrop */}
           <div 
             className="fixed inset-0 z-10" 
-            onClick={() => setShowDropdown(false)}
+            onClick={handleClose}
           />
           
           {/* Dropdown */}
-          <div className="absolute right-0 mt-2 w-96 max-w-sm bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl z-20 overflow-hidden">
+          <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-[calc(100vw-1rem)] max-w-sm bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl z-20 overflow-hidden sm:right-0 sm:left-auto sm:transform-none sm:w-96">
             {/* Header */}
             <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/20">
               <div className="flex justify-between items-center">
@@ -152,7 +166,7 @@ export function NotificationCenter() {
                             <button
                               onClick={() => {
                                 notification.action!.onClick()
-                                setShowDropdown(false)
+                                handleClose()
                               }}
                               className="mt-2 px-3 py-1.5 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 transition-colors font-medium"
                             >
