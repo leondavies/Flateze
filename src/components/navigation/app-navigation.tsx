@@ -27,6 +27,25 @@ const navigationItems = [
 export function AppNavigation({ user }: NavigationProps) {
   const pathname = usePathname()
   const [showMobileMenu, setShowMobileMenu] = useState(false)
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false)
+  const [showNotificationDropdown, setShowNotificationDropdown] = useState(false)
+
+  // Close other dropdowns when one opens
+  const handleNotificationToggle = () => {
+    const newState = !showNotificationDropdown
+    setShowNotificationDropdown(newState)
+    if (newState) {
+      setShowProfileDropdown(false)
+    }
+  }
+
+  const handleProfileToggle = () => {
+    const newState = !showProfileDropdown
+    setShowProfileDropdown(newState)
+    if (newState) {
+      setShowNotificationDropdown(false)
+    }
+  }
 
   const isActive = (href: string) => {
     if (href === '/dashboard') {
@@ -72,7 +91,10 @@ export function AppNavigation({ user }: NavigationProps) {
                 ))}
               </div>
 
-              <NotificationCenter />
+              <NotificationCenter 
+                isOpen={showNotificationDropdown}
+                onToggle={handleNotificationToggle} 
+              />
 
               {/* Mobile Menu Button */}
               <button
@@ -84,15 +106,86 @@ export function AppNavigation({ user }: NavigationProps) {
                 </svg>
               </button>
 
-              <div className="flex items-center space-x-3 bg-white/60 dark:bg-slate-800/60 rounded-full px-4 py-2 backdrop-blur-sm">
-                <img
-                  className="h-8 w-8 rounded-full ring-2 ring-white dark:ring-slate-700 shadow-sm"
-                  src={user.image || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face`}
-                  alt={user.name}
-                />
-                <span className="text-sm font-medium text-slate-700 dark:text-slate-200 hidden sm:block">
-                  {user.name}
-                </span>
+              {/* Profile Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={handleProfileToggle}
+                  className="flex items-center space-x-3 bg-white/60 dark:bg-slate-800/60 rounded-full px-4 py-2 backdrop-blur-sm hover:bg-white/80 dark:hover:bg-slate-800/80 transition-colors"
+                >
+                  <img
+                    className="h-8 w-8 rounded-full ring-2 ring-white dark:ring-slate-700 shadow-sm"
+                    src={user.image || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face`}
+                    alt={user.name}
+                  />
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-200 hidden sm:block">
+                    {user.name}
+                  </span>
+                  <svg className="w-4 h-4 text-slate-500 dark:text-slate-400 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {showProfileDropdown && (
+                  <>
+                    {/* Backdrop */}
+                    <div 
+                      className="fixed inset-0 z-10" 
+                      onClick={() => setShowProfileDropdown(false)}
+                    />
+                    
+                    {/* Profile Dropdown */}
+                    <div className="absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl z-20 overflow-hidden transform -translate-x-2 sm:translate-x-0">
+                      {/* Profile Header */}
+                      <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/20">
+                        <div className="flex items-center space-x-3">
+                          <img
+                            className="h-12 w-12 rounded-full ring-2 ring-white dark:ring-slate-700 shadow-sm"
+                            src={user.image || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=48&h=48&fit=crop&crop=face`}
+                            alt={user.name}
+                          />
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-semibold text-slate-800 dark:text-slate-200 truncate">{user.name}</h4>
+                            <p className="text-sm text-slate-600 dark:text-slate-400 truncate">{user.email}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Profile Actions */}
+                      <div className="p-2">
+                        <Link
+                          href="/profile"
+                          onClick={() => setShowProfileDropdown(false)}
+                          className="flex items-center space-x-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors text-slate-700 dark:text-slate-300"
+                        >
+                          <span className="text-lg">✏️</span>
+                          <span className="font-medium">Edit Profile</span>
+                        </Link>
+                        
+                        <Link
+                          href="/profile"
+                          onClick={() => setShowProfileDropdown(false)}
+                          className="flex items-center space-x-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors text-slate-700 dark:text-slate-300"
+                        >
+                          <span className="text-lg">⚙️</span>
+                          <span className="font-medium">Settings</span>
+                        </Link>
+                        
+                        <div className="border-t border-slate-200 dark:border-slate-600 my-2"></div>
+                        
+                        <button
+                          onClick={() => {
+                            setShowProfileDropdown(false)
+                            // Add logout functionality here
+                          }}
+                          className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-red-600 dark:text-red-400"
+                        >
+                          <span className="text-lg">🚪</span>
+                          <span className="font-medium">Sign Out</span>
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
               
               <div className="text-xs text-amber-700 dark:text-amber-300 bg-gradient-to-r from-amber-100 to-yellow-100 dark:from-amber-900/20 dark:to-yellow-900/20 px-3 py-1.5 rounded-full border border-amber-200 dark:border-amber-800/50 shadow-sm hidden sm:block">

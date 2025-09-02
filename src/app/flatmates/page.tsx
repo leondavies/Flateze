@@ -379,87 +379,97 @@ export default function Flatmates() {
             {filteredMembers.map((member) => (
               <div key={member.id} className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl border border-white/20 dark:border-slate-700/30 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
                 <div className="p-4 sm:p-6">
-                  <div className="space-y-4">
-                    {/* Header section with member info and stats */}
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
-                        <div className="relative flex-shrink-0">
-                          <img
-                            src={member.image || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face`}
-                            alt={member.name}
-                            className="w-12 h-12 sm:w-16 sm:h-16 rounded-full ring-3 ring-white dark:ring-slate-700 shadow-lg object-cover"
-                          />
-                          <div className="absolute -bottom-1 -right-1 text-lg sm:text-2xl">
-                            {getRoleIcon(member.role)}
-                          </div>
+                  {/* Mobile-optimized vertical layout to match dashboard */}
+                  <div className="space-y-3">
+                    {/* Member header */}
+                    <div className="flex items-center space-x-3">
+                      <div className="relative flex-shrink-0">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm overflow-hidden ${
+                          member.status === 'active' ? 'bg-gradient-to-r from-green-400 to-emerald-500' : 
+                          member.status === 'pending' ? 'bg-gradient-to-r from-yellow-400 to-amber-500' : 
+                          'bg-gradient-to-r from-gray-400 to-slate-500'
+                        }`}>
+                          {member.image ? (
+                            <img
+                              src={member.image}
+                              alt={member.name}
+                              className="w-8 h-8 rounded-full object-cover"
+                            />
+                          ) : (
+                            member.name.charAt(0)
+                          )}
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <h3 className="text-lg sm:text-xl font-bold text-slate-800 dark:text-slate-100 truncate">{member.name}</h3>
-                          <div className="flex flex-wrap items-center gap-2 mt-1">
-                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-bold border ${getStatusColor(member.status)}`}>
-                              {member.status}
-                            </span>
-                            {member.role === 'ADMIN' && (
-                              <span className="text-xs px-2 py-1 bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-300 rounded-full border border-purple-200 dark:border-purple-800/50">
-                                Admin
-                              </span>
-                            )}
-                          </div>
+                        <div className="absolute -bottom-0.5 -right-0.5 text-xs">
+                          {getRoleIcon(member.role)}
                         </div>
                       </div>
-                      <div className="text-right flex-shrink-0 ml-4">
-                        <div className="text-xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">${member.totalPaid.toFixed(2)}</div>
-                        <div className="text-xs text-slate-500 dark:text-slate-500">Total Paid</div>
-                      </div>
-                    </div>
-
-                    {/* Contact details */}
-                    <div className="space-y-2">
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-slate-600 dark:text-slate-400">
-                        <span className="flex items-center">
-                          <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                          </svg>
-                          <span className="truncate">{member.email}</span>
-                        </span>
-                        {member.phone && (
-                          <span className="flex items-center">
-                            <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                            </svg>
-                            <span className="truncate">{member.phone}</span>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-slate-800 dark:text-slate-100 truncate">{member.name}</h4>
+                        <div className="flex items-center space-x-2 mt-0.5">
+                          <span className="text-xs text-slate-500 dark:text-slate-400">{member.role.toLowerCase()}</span>
+                          {member.role === 'ADMIN' && <span className="text-xs">•</span>}
+                          <span className="text-xs text-slate-500 dark:text-slate-400">
+                            {member.billsContributed} bills
                           </span>
-                        )}
-                      </div>
-                      <div className="flex items-center text-sm text-slate-600 dark:text-slate-400">
-                        <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4h3a1 1 0 011 1v9a2 2 0 01-2 2H7a2 2 0 01-2-2V8a1 1 0 011-1h1z" />
-                        </svg>
-                        Joined {new Date(member.joinedAt).toLocaleDateString()}
+                        </div>
                       </div>
                     </div>
 
-                    {/* Stats and actions section */}
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2 border-t border-slate-200 dark:border-slate-600">
-                      <div className="flex flex-col sm:flex-row gap-4 text-sm text-slate-600 dark:text-slate-400">
-                        <span className="font-medium">{member.billsContributed} bills contributed</span>
-                        <span className="font-medium">${member.averageMonthly.toFixed(2)}/month average</span>
+                    {/* Amount and status */}
+                    <div className="flex items-center justify-between">
+                      <div className="text-xl font-bold text-slate-800 dark:text-slate-100">
+                        ${member.totalPaid.toFixed(2)}
                       </div>
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(member.status)}`}>
+                        {member.status}
+                      </span>
+                    </div>
 
-                      {currentUser.role === 'ADMIN' && member.id !== currentUser.id && (
-                        <div className="flex gap-2">
-                          <button className="px-3 py-2 text-sm bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/40 transition-colors font-medium">
-                            Edit Role
-                          </button>
-                          <button
-                            onClick={() => setShowRemoveModal(member)}
-                            className="px-3 py-2 text-sm bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/40 transition-colors font-medium"
-                          >
-                            Remove
-                          </button>
+                    {/* Member details */}
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center">
+                        <svg className="w-3 h-3 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        <span className="truncate">{member.email}</span>
+                      </div>
+                      {member.phone && (
+                        <div className="flex items-center">
+                          <svg className="w-3 h-3 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                          </svg>
+                          <span className="truncate">{member.phone}</span>
                         </div>
                       )}
+                      <div className="flex items-center">
+                        <svg className="w-3 h-3 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4h3a1 1 0 011 1v9a2 2 0 01-2 2H7a2 2 0 01-2-2V8a1 1 0 011-1h1z" />
+                        </svg>
+                        <span>Joined {new Date(member.joinedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                      </div>
                     </div>
+
+                    {/* Stats section */}
+                    <div className="text-center py-1">
+                      <div className="text-sm text-slate-600 dark:text-slate-400">
+                        ${member.averageMonthly.toFixed(2)}/month average
+                      </div>
+                    </div>
+
+                    {/* Actions section - only for admins */}
+                    {currentUser.role === 'ADMIN' && member.id !== currentUser.id && (
+                      <div className="flex gap-2 pt-2 border-t border-slate-200 dark:border-slate-600">
+                        <button className="flex-1 px-3 py-2 text-sm bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/40 transition-colors font-medium">
+                          Edit Role
+                        </button>
+                        <button
+                          onClick={() => setShowRemoveModal(member)}
+                          className="flex-1 px-3 py-2 text-sm bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/40 transition-colors font-medium"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
